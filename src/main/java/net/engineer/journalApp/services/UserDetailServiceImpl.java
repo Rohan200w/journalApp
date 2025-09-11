@@ -16,11 +16,13 @@ public class UserDetailServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         net.engineer.journalApp.entity.User user = usr.findByUserName(username);
+        System.out.println("Authorities for " + user.getUserName() + " -> " + user.getRoles());
         if(user!=null){
             UserDetails us = User.builder().
                     username(user.getUserName()).
                     password(user.getPassword()).
                     roles(user.getRoles().toArray(new String[0])).build();
+            System.out.println("GrantedAuthorities -> " + us.getAuthorities());
             return us;
         }
         throw new UsernameNotFoundException("user not found"+username);
