@@ -12,7 +12,8 @@ public class SentimentConsumerService {
     @Autowired
     private EmailService em;
 
-    @KafkaListener(topics="animal",groupId = "abc")
+    //commented for cloud deployment
+//    @KafkaListener(topics="animal",groupId = "abc")
     public void consume(SentimentData data){
         sendmail(data);
     }
