@@ -1,6 +1,7 @@
 package net.engineer.journalApp.controller;
 
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import net.engineer.journalApp.Cache.AppCache;
 import net.engineer.journalApp.entity.User;
 import net.engineer.journalApp.services.UserService;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
+@Tag(name = "Admin API's")
 public class AdminController {
 
     @Autowired

@@ -1,5 +1,7 @@
 package net.engineer.journalApp.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import net.engineer.journalApp.entity.JournalEntry;
 import net.engineer.journalApp.entity.User;
 import net.engineer.journalApp.services.JournalEntryService;
@@ -16,6 +18,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/journal")
+@Tag(name = "Journal API's")
 public class JournalEntryControllerV2 {
 
     @Autowired
@@ -24,6 +27,7 @@ public class JournalEntryControllerV2 {
     private UserService usm;
 
     @GetMapping
+    @Operation(description = "Get all journal entries for the logged in user")
     public ResponseEntity<?> getAllJournalEntriesOfUser(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userName = auth.getName();

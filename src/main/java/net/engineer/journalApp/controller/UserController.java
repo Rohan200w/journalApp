@@ -1,5 +1,6 @@
 package net.engineer.journalApp.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import net.engineer.journalApp.api.response.WeatherResponse;
 import net.engineer.journalApp.entity.User;
 import net.engineer.journalApp.repository.UserRepo;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
+@Tag(name = "User API's", description = "CRUD operations for user")
 public class UserController {
     @Autowired
     private UserService usm;

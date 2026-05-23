@@ -1,5 +1,6 @@
 package net.engineer.journalApp.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import net.engineer.journalApp.entity.User;
 import net.engineer.journalApp.services.UserDetailServiceImpl;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Slf4j
 @RequestMapping("/public")
+@Tag(name = "Public API's")
 public class PublicController {
 
     @Autowired

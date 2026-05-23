@@ -1,5 +1,6 @@
 package net.engineer.journalApp.filter;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,9 +29,31 @@ public class JwtFilter  extends OncePerRequestFilter{
         String authorizationHeader = request.getHeader("Authorization");
         String username = null;
         String jwt = null;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
-            username = jwtUtil.extractUsername(jwt);
+//        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+//            jwt = authorizationHeader.substring(7);
+//            username = jwtUtil.extractUsername(jwt);
+//        }
+
+        try {
+
+            if (authorizationHeader != null &&
+                    authorizationHeader.startsWith("Bearer ")) {
+
+                jwt = authorizationHeader.substring(7);
+
+                username = jwtUtil.extractUsername(jwt);
+            }
+
+        }
+        catch (ExpiredJwtException e) {
+
+            System.out.println("JWT expired");
+
+        }
+        catch (Exception e) {
+
+            System.out.println("Invalid JWT");
+
         }
         if (username != null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
