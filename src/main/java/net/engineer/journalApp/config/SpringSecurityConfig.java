@@ -1,4 +1,5 @@
 package net.engineer.journalApp.config;
+import jakarta.servlet.http.HttpServletResponse;
 import net.engineer.journalApp.filter.JwtFilter;
 import net.engineer.journalApp.filter.OAuth2SuccessHandler;
 import net.engineer.journalApp.services.UserDetailServiceImpl;
@@ -7,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -32,23 +32,24 @@ public class SpringSecurityConfig {
     private JwtFilter jwtFilter;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         return http.authorizeHttpRequests(request -> request
-                        .requestMatchers(
-                                "/public/**",
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/docs/**"
-                        ).permitAll()
-                        .requestMatchers("/public/**,").permitAll()
+                        .requestMatchers("/public/**", "/v3/api-docs/**",
+                                "/swagger-ui/**", "/swagger-ui.html", "/docs/**")
+                        .permitAll()
                         .requestMatchers("/journal/**", "/user/**").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .oauth2Login(oauth2 -> oauth2         // LINE 2 — enable google login
-                        .successHandler(oAuth2SuccessHandler) // LINE 3 — use your handler
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(oAuth2SuccessHandler)
+                )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"error\": \"Unauthorized - invalid or missing token\"}");
+                        })
                 )
                 .build();
     }
